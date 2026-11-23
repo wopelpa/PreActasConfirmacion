@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seguimiento de Pre Actas — Consejo Universitario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EEF3F8; --card:#FFFFFF; --ink:#0F2C49; --soft:#57708A;
+  --line:#CBDAE7; --line2:#DEE9F2; --azul:#194D84; --oscuro:#0B2740; --celeste:#00AEEF;
+  --falta:#B45309; --falta-bg:#FDF1E3; --ok-bg:#D2EFFB;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--celeste);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+header{background:var(--oscuro);border-bottom:3px solid var(--celeste);margin-bottom:28px}
+header .wrap{padding-top:30px;padding-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap}
+h1{font-family:'Source Serif 4',serif;font-weight:600;font-size:2rem;line-height:1.2;margin:0 0 6px;color:#fff;letter-spacing:-.01em}
+header p{margin:0;color:#AFC6DA;max-width:560px}
+.org{text-align:right;color:#AFC6DA;font-size:.85rem}
+.org b{display:block;font-family:'Source Serif 4',serif;font-size:1rem;color:var(--celeste)}
+
+h2{font-family:'Source Serif 4',serif;font-weight:600;font-size:1.2rem;margin:0 0 12px}
+.chips{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;margin-bottom:26px}
+.chip{flex:0 0 auto;min-width:128px;text-align:left;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--line);padding:10px 14px}
+.chip .d{display:block;font-family:'Source Serif 4',serif;font-weight:600;font-size:1.1rem}
+.chip .t{display:block;font-size:.78rem;color:var(--soft)}
+.chip .n{display:block;font-size:.85rem;font-weight:600;margin-top:4px}
+.chip.on{background:var(--oscuro);border-left-color:var(--celeste);color:#fff}
+.chip.on .t{color:#9FC1DB}
+.chip.full{border-left-color:var(--azul)}
+.chip.empty .n{color:var(--soft);font-weight:400}
+.chip.on .n{color:#fff}
+
+.summary{background:var(--card);border:1px solid var(--line);padding:22px 24px;margin-bottom:22px}
+.summary .top{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.big{font-family:'Source Serif 4',serif;font-weight:600;font-size:2.8rem;line-height:1}
+.big small{font-size:1.1rem;font-weight:400;color:var(--soft)}
+.sub{color:var(--soft);font-size:.92rem}
+.bar{height:14px;background:var(--line2);border-radius:2px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--azul);transition:width .4s}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:.9rem}
+.legend b{font-family:'Source Serif 4',serif;font-size:1.25rem;margin-right:4px}
+.legend .f b{color:var(--falta)} .legend .o b{color:var(--azul)}
+
+.notice{background:var(--falta-bg);border-left:4px solid var(--falta);padding:12px 16px;margin-bottom:22px;font-size:.92rem}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px}
+.panel{background:var(--card);border:1px solid var(--line);padding:18px 20px 8px}
+.panel.falta{border-top:4px solid var(--falta)}
+.panel.ok{border-top:4px solid var(--azul)}
+.ph{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.ph h2{margin:0}
+.copy{background:var(--falta-bg);border:1px solid var(--falta);color:var(--falta);font-size:.8rem;font-weight:600;padding:5px 10px}
+ul{list-style:none;margin:0;padding:0}
+li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line2)}
+li:first-child{border-top:none}
+.nm{font-weight:500}
+.em{display:block;font-size:.8rem;color:var(--soft);word-break:break-all}
+.when{font-size:.78rem;color:var(--soft);text-align:right;white-space:nowrap}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:2px;margin-top:2px}
+.tag.c{background:var(--ok-bg);color:var(--azul)} .tag.x{background:var(--falta-bg);color:var(--falta)}
+.none{padding:14px 0 16px;color:var(--soft)}
+.obs{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--falta);padding:16px 20px;margin-bottom:12px}
+.obs b{font-family:'Source Serif 4',serif}
+.obs p{margin:6px 0 0;font-size:.92rem}
+footer{margin:40px 0 50px;padding-top:16px;border-top:1px solid var(--line);color:var(--soft);font-size:.8rem}
+@media(max-width:760px){
+  .wrap{padding:0 16px} h1{font-size:1.55rem} .org{text-align:left}
+  .cols{grid-template-columns:1fr} .big{font-size:2.3rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div>
+      <h1>Seguimiento de conformidad de Pre Acta</h1>
+      <p>Quiénes ya respondieron el formulario y quiénes faltan, por sesión del Consejo Universitario.</p>
+    </div>
+    <div class="org"><b>Universidad Andina del Cusco</b><span id="actualizado"></span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <h2>Elige la sesión</h2>
+  <div class="chips" id="chips"></div>
+  <div id="detalle"></div>
+</main>
+
+<footer class="wrap">Datos tomados de las hojas de respuestas de cada formulario de Google. Las personas se comparan por correo institucional.</footer>
+
+<script>
+/* ===== DATOS (se actualizan pidiéndole a Claude que regenere este archivo) ===== */
+const ACTUALIZADO = "23 de noviembre de 2026";
+
+const PERSONAS = [
+  ["Cristhian Eduardo Ganvini Valcarcel","cganvini@uandina.edu.pe"],
+  ["Rosaura Torre Rueda","rtorre@uandina.edu.pe"],
+  ["Eduardo Jose Longa Ramos","elonga@uandina.edu.pe"],
+  ["Magna Asiscla Cusimayta Quispe","mcusimayta@uandina.edu.pe"],
+  ["Aydee Flores Contreras","afloresc@uandina.edu.pe"],
+  ["Uriel Balladares Aparicio","uballadares@uandina.edu.pe"],
+  ["Jesus Alejandro Arenas Fernandez Davila","jarenas@uandina.edu.pe"],
+  ["Victor Raul Acuña Loaiza","vacuna@uandina.edu.pe"],
+  ["Nicolas Francisco Bolaños Cerrillo","nbolanos@uandina.edu.pe"],
+  ["Ysabel Masias Ynocencio","ymasias@uandina.edu.pe"],
+  ["Ricardo Fernandez Lorenzo","rfernandez@uandina.edu.pe"],
+  ["Fiorela Gamarra Aymituma","022200558k@uandina.edu.pe"],
+  ["Isabel Delfina Angulo Vargas","023101297c@uandina.edu.pe"],
+  ["Mavely Lineth Zaa Curi","024101429f@uandina.edu.pe"],
+  ["Favio Cesar Villafuerte Salgado","023101141c@uandina.edu.pe"],
+  ["Ariana Magdyel Espinoza Figueroa","023100996e@uandina.edu.pe"],
+  ["Monica Marca Aima","mmarca@uandina.edu.pe"],
+  ["Roberto Rivero Ynfantas","rrivero@uandina.edu.pe"]
+].map(([n,e])=>({n,e}));
+
+/* r: [correo, fecha y hora, "S" = conforme / "N" = con observación, texto de la observación] */
+const SESIONES = [
+  {corto:"17 nov", tipo:"Extraordinario", fecha:"17 de noviembre de 2026", r:[]},
+  {corto:"12 nov", tipo:"Extraordinario", fecha:"12 de noviembre de 2026", r:[]},
+  {corto:"10 nov", tipo:"Extraordinario", fecha:"10 de noviembre de 2026", r:[
+    ["ymasias@uandina.edu.pe","22/11 10:37","S"],
+    ["uballadares@uandina.edu.pe","22/11 13:52","S"],
+    ["nbolanos@uandina.edu.pe","22/11 22:13","S"],
+    ["022200558k@uandina.edu.pe","22/11 23:39","S"],
+    ["rrivero@uandina.edu.pe","23/11 08:27","S"],
+    ["afloresc@uandina.edu.pe","23/11 09:29","S"],
+    ["rtorre@uandina.edu.pe","23/11 10:28","S"]
+  ]},
+  {corto:"26 oct", tipo:"Extraordinario", fecha:"26 de octubre de 2026", r:[
+    ["ymasias@uandina.edu.pe","22/11 10:38","S"],
+    ["nbolanos@uandina.edu.pe","22/11 22:14","S"],
+    ["022200558k@uandina.edu.pe","22/11 23:32","S"],
+    ["rrivero@uandina.edu.pe","23/11 08:21","S"],
+    ["rtorre@uandina.edu.pe","23/11 09:50","S"]
+  ]},
+  {corto:"19 oct", tipo:"Ordinario", fecha:"19 de octubre de 2026", r:[
+    ["ymasias@uandina.edu.pe","21/11 11:19","S"],
+    ["nbolanos@uandina.edu.pe","22/11 22:16","S"],
+    ["022200558k@uandina.edu.pe","22/11 23:27","S"],
+    ["rrivero@uandina.edu.pe","23/11 08:18","S"],
+    ["rtorre@uandina.edu.pe","23/11 09:42","S"]
+  ]},
+  {corto:"7 oct",  tipo:"Extraordinario", fecha:"7 de octubre de 2026", r:[
+    ["jarenas@uandina.edu.pe","15/10 10:00","S"],
+    ["023100996e@uandina.edu.pe","15/10 11:03","S"],
+    ["023101141c@uandina.edu.pe","15/10 11:48","S"],
+    ["vacuna@uandina.edu.pe","15/10 12:17","S"],
+    ["rrivero@uandina.edu.pe","15/10 15:04","S"],
+    ["afloresc@uandina.edu.pe","15/10 15:32","S"],
+    ["nbolanos@uandina.edu.pe","15/10 16:44","S"],
+    ["rfernandez@uandina.edu.pe","15/10 19:38","S"],
+    ["mcusimayta@uandina.edu.pe","16/10 17:46","S"],
+    ["uballadares@uandina.edu.pe","18/10 17:00","S"],
+    ["elonga@uandina.edu.pe","18/10 18:38","S"],
+    ["023101297c@uandina.edu.pe","19/10 07:17","S"]
+  ]},
+  {corto:"28 sep", tipo:"Extraordinario", fecha:"28 de septiembre de 2026", r:[
+    ["023100996e@uandina.edu.pe","13/10 14:30","S"],
+    ["rrivero@uandina.edu.pe","13/10 15:42","S"],
+    ["vacuna@uandina.edu.pe","13/10 15:47","S"],
+    ["ymasias@uandina.edu.pe","13/10 16:27","S"],
+    ["rtorre@uandina.edu.pe","13/10 21:23","S"],
+    ["022200558k@uandina.edu.pe","14/10 14:47","S"],
+    ["uballadares@uandina.edu.pe","18/10 17:02","S"],
+    ["jarenas@uandina.edu.pe","18/10 20:00","S"],
+    ["024101429f@uandina.edu.pe","18/10 23:28","S"],
+    ["023101297c@uandina.edu.pe","04/11 20:17","S"]
+  ]},
+  {corto:"7 sep", tipo:"Ordinario", fecha:"7 de septiembre de 2026", r:[
+    ["022200558k@uandina.edu.pe","13/10 14:17","S"],
+    ["vacuna@uandina.edu.pe","13/10 15:37","S"],
+    ["ymasias@uandina.edu.pe","13/10 16:31","S"],
+    ["rtorre@uandina.edu.pe","13/10 21:19","N","pág. 12, párrafo 6: debe decir, en relación a COMAEM, optimizar tiempos ya que la autoevaluación debe entregarse en diciembre; en relación a la matrícula de Medicina Humana, para que no existan reclamos, se debe solicitar a la DDA cambios en los prerrequisitos de sus asignaturas."],
+    ["rrivero@uandina.edu.pe","14/10 10:54","S"],
+    ["jarenas@uandina.edu.pe","18/10 20:00","S"],
+    ["023100996e@uandina.edu.pe","19/10 07:17","S"],
+    ["elonga@uandina.edu.pe","19/10 07:18","S"]
+  ]},
+  {corto:"7 ago", tipo:"Ordinario", fecha:"7 de agosto de 2026", r:[
+    ["ymasias@uandina.edu.pe","28/08 09:15","S"],
+    ["mfernandezg@uandina.edu.pe","28/08 10:16","S"],
+    ["uballadares@uandina.edu.pe","28/08 10:24","S"],
+    ["jarenas@uandina.edu.pe","29/08 09:39","S"],
+    ["vacuna@uandina.edu.pe","30/08 21:07","S"],
+    ["023100996e@uandina.edu.pe","31/08 20:28","S"],
+    ["elonga@uandina.edu.pe","01/09 10:56","S"],
+    ["rtorre@uandina.edu.pe","01/09 12:28","S"],
+    ["mcusimayta@uandina.edu.pe","04/09 11:12","S"],
+    ["023101141c@uandina.edu.pe","07/09 07:23","S"],
+    ["022200558k@uandina.edu.pe","07/09 09:41","S"]
+  ]}
+];
+/* ===== FIN DE DATOS ===== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TOTAL = PERSONAS.length;
+let actual = 0;
+
+function calcular(s){
+  const porCorreo = new Map(s.r.map(x => [x[0].toLowerCase(), x]));
+  const ya = [], falta = [];
+  PERSONAS.forEach(p => {
+    const x = porCorreo.get(p.e.toLowerCase());
+    x ? ya.push({p, f:x[1], c:x[2]==="S", o:x[3]||""}) : falta.push(p);
+  });
+  const lista = new Set(PERSONAS.map(p => p.e.toLowerCase()));
+  const extras = s.r.filter(x => !lista.has(x[0].toLowerCase()));
+  return {ya, falta, extras};
+}
+
+function dibujarChips(){
+  $("chips").innerHTML = SESIONES.map((s,i)=>{
+    const {ya} = calcular(s);
+    const cls = "chip" + (i===actual?" on":"") + (ya.length===TOTAL?" full":"") + (ya.length===0?" empty":"");
+    return `<button class="${cls}" data-i="${i}"><span class="d">${s.corto}</span><span class="t">${s.tipo}</span><span class="n">${ya.length===0?"Sin respuestas":ya.length+" de "+TOTAL}</span></button>`;
+  }).join("");
+  document.querySelectorAll(".chip").forEach(b => b.onclick = () => { actual = +b.dataset.i; dibujar(); });
+}
+
+function dibujar(){
+  dibujarChips();
+  const s = SESIONES[actual], {ya, falta, extras} = calcular(s);
+  const pct = Math.round(ya.length / TOTAL * 100);
+  const obs = ya.filter(x => !x.c);
+
+  let html = `
+  <section class="summary">
+    <div class="top">
+      <div class="big">${ya.length} <small>de ${TOTAL} han respondido</small></div>
+      <div class="sub">Pre Acta del Consejo ${s.tipo} del ${s.fecha}</div>
+    </div>
+    <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%"></i></div>
+    <div class="legend">
+      <span class="o"><b>${ya.length}</b>respondieron (${pct}%)</span>
+      <span class="f"><b>${falta.length}</b>faltan</span>
+      <span class="o"><b>${obs.length}</b>con observación</span>
+    </div>
+  </section>`;
+
+  if (ya.length === 0)
+    html += `<div class="notice">Esta hoja todavía no tiene respuestas registradas, se actualizarán los datos en breve.</div>`;
+
+  if (extras.length)
+    html += `<div class="notice">Además respondió${extras.length>1?"eron":""} ${extras.length} correo${extras.length>1?"s":""} que no está${extras.length>1?"n":""} en la lista de ${TOTAL} personas: ${extras.map(x=>esc(x[0])).join(", ")}. No se cuenta en el avance.</div>`;
+
+  html += `<div class="cols">
+    <section class="panel falta">
+      <div class="ph"><h2>Faltan responder (${falta.length})</h2>${falta.length?'<button class="copy" id="copiar">Copiar correos</button>':''}</div>
+      ${falta.length ? "<ul>"+falta.map(p=>`<li><div><span class="nm">${esc(p.n)}</span><span class="em">${esc(p.e)}</span></div></li>`).join("")+"</ul>" : '<p class="none">Todos respondieron.</p>'}
+    </section>
+    <section class="panel ok">
+      <div class="ph"><h2>Ya respondieron (${ya.length})</h2></div>
+      ${ya.length ? "<ul>"+ya.map(x=>`<li><div><span class="nm">${esc(x.p.n)}</span><span class="tag ${x.c?'c':'x'}">${x.c?'Conforme':'Con observación'}</span></div><span class="when">${esc(x.f)}</span></li>`).join("")+"</ul>" : '<p class="none">Nadie ha respondido todavía.</p>'}
+    </section>
+  </div>`;
+
+  if (obs.length)
+    html += `<h2>Observaciones recibidas</h2>` + obs.map(x=>`<div class="obs"><b>${esc(x.p.n)}</b><p>${esc(x.o||"Sin detalle.")}</p></div>`).join("");
+
+  $("detalle").innerHTML = html;
+
+  const b = $("copiar");
+  if (b) b.onclick = () => {
+    const txt = falta.map(p=>p.e).join("; ");
+    const ok = () => { b.textContent = "Copiados"; setTimeout(()=>b.textContent="Copiar correos", 1800); };
+    try { navigator.clipboard.writeText(txt).then(ok, ()=>prompt("Copia los correos:", txt)); }
+    catch(e){ prompt("Copia los correos:", txt); }
+  };
+}
+
+$("actualizado").textContent = "Actualizado al " + ACTUALIZADO;
+dibujar();
+</script>
+</body>
+</html>
